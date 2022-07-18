@@ -3,15 +3,36 @@
 /* eslint-disable react/prop-types */
 import React, { createContext, useState, useEffect } from 'react';
 
-export const globalContext = createContext();
+export const transactionContext = createContext();
 export const historyContext = createContext();
 export const balanceContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
-  const [history, setHistory] = useState([]);
+  // States
+  const [transactionHistory, setTransactionHistory] = useState([]);
   const [income, setIncome] = useState(0);
   const [expense, setExpense] = useState(0);
   const [balance, setBalance] = useState(0);
+
+  //useEffect
+  useEffect(() => {
+    const amounts = transactionHistory.map((item) => item.amount);
+    let inc = 0;
+    let expe = 0;
+    setBalance(amounts.reduce((prev, curr) => prev + curr, 0));
+
+    for (let i = 0; i < amounts.length; i++) {
+      if (amounts[i] > 0) {
+        inc = inc + amounts[i];
+      } else {
+        expe = expe + amounts[i];
+      }
+    }
+
+    setIncome(inc);
+    setExpense(expe);
+  }, [transactionHistory]);
+
   //   //Run Once
   //   useEffect(() => {
   //     getLocalBalance();
@@ -20,23 +41,21 @@ export const GlobalProvider = ({ children }) => {
   //   useEffect(() => {
   //     saveLocalBalance();
   //   }, [history]);
-  function addTransaction(nTransaction) {
-    setHistory([...history, nTransaction]);
-  }
-  function moneyFormatter(num) {
-    let p = num.toFixed(2).split('.');
-    return (
-      '$ ' +
-      p[0]
-        .split('')
-        .reverse()
-        .reduce(function (acc, num, i, orig) {
-          return num === '-' ? acc : num + (i && !(i % 3) ? ',' : '') + acc;
-        }, '') +
-      '.' +
-      p[1]
-    );
-  }
+
+  //   function moneyFormatter(num) {
+  //     let p = num.toFixed(2).split('.');
+  //     return (
+  //       '$ ' +
+  //       p[0]
+  //         .split('')
+  //         .reverse()
+  //         .reduce(function (acc, num, i, orig) {
+  //           return num === '-' ? acc : num + (i && !(i % 3) ? ',' : '') + acc;
+  //         }, '') +
+  //       '.' +
+  //       p[1]
+  //     );
+  //   }
 
   //   //Save to local
   //   const saveLocalBalance = () => {
@@ -56,14 +75,9 @@ export const GlobalProvider = ({ children }) => {
   //   };
 
   return (
-    <globalContext.Provider value={addTransaction}>
-      <historyContext.Provider value={{ history, setHistory }}>
-        <balanceContext.Provider
-          value={{ income, setIncome, expense, setExpense, balance, setBalance, moneyFormatter }}>
-          {children}
-        </balanceContext.Provider>
-      </historyContext.Provider>
-    </globalContext.Provider>
+    <transactionContext.Provider value={{ transactionHistory, setTransactionHistory }}>
+      {children}
+    </transactionContext.Provider>
   );
 };
 

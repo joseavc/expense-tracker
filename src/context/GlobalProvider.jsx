@@ -57,7 +57,8 @@ export const GlobalProvider = ({ children }) => {
   };
 
   return (
-    <transactionContext.Provider value={{ transactionHistory, setTransactionHistory }}>
+    <transactionContext.Provider
+      value={{ transactionHistory, setTransactionHistory, moneyFormatter }}>
       <balanceContext.Provider value={{ income, expense, balance, moneyFormatter }}>
         {children}
       </balanceContext.Provider>

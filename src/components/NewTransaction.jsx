@@ -10,7 +10,7 @@ function NewTransaction() {
 
   const onSubmit = (e) => {
     const timeElapsed = Date.now();
-    const today = new Date(timeElapsed);
+    const today = new Date(timeElapsed).toString();
     e.preventDefault();
     transaction = {
       id: Math.floor(Math.random() * 10000),

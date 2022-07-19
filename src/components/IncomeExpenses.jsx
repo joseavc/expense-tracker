@@ -1,17 +1,18 @@
 /* eslint-disable no-unused-vars */
-import React, { useContext, useEffect, useState } from 'react';
-import { historyContext, balanceContext } from '../context/GlobalProvider';
+import React, { useContext } from 'react';
+import { balanceContext } from '../context/GlobalProvider';
 
 function IncomeExpenses() {
+  const incomeExpenses = useContext(balanceContext);
   return (
     <div className="inc-exp-container">
       <div>
         <h4>Income</h4>
-        <p className="money plus">$0 </p>
+        <p className="money plus">{incomeExpenses.moneyFormatter(incomeExpenses.income)} </p>
       </div>
       <div>
         <h4>Expense</h4>
-        <p className="money minus">-$0</p>
+        <p className="money minus">-{incomeExpenses.moneyFormatter(incomeExpenses.expense)}</p>
       </div>
     </div>
   );

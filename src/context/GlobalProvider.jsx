@@ -4,7 +4,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 
 export const transactionContext = createContext();
-export const historyContext = createContext();
 export const balanceContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
@@ -42,20 +41,20 @@ export const GlobalProvider = ({ children }) => {
   //     saveLocalBalance();
   //   }, [history]);
 
-  //   function moneyFormatter(num) {
-  //     let p = num.toFixed(2).split('.');
-  //     return (
-  //       '$ ' +
-  //       p[0]
-  //         .split('')
-  //         .reverse()
-  //         .reduce(function (acc, num, i, orig) {
-  //           return num === '-' ? acc : num + (i && !(i % 3) ? ',' : '') + acc;
-  //         }, '') +
-  //       '.' +
-  //       p[1]
-  //     );
-  //   }
+  function moneyFormatter(num) {
+    let p = num.toFixed(2).split('.');
+    return (
+      '$ ' +
+      p[0]
+        .split('')
+        .reverse()
+        .reduce(function (acc, num, i, orig) {
+          return num === '-' ? acc : num + (i && !(i % 3) ? ',' : '') + acc;
+        }, '') +
+      '.' +
+      p[1]
+    );
+  }
 
   //   //Save to local
   //   const saveLocalBalance = () => {
@@ -76,7 +75,9 @@ export const GlobalProvider = ({ children }) => {
 
   return (
     <transactionContext.Provider value={{ transactionHistory, setTransactionHistory }}>
-      {children}
+      <balanceContext.Provider value={{ income, expense, balance, moneyFormatter }}>
+        {children}
+      </balanceContext.Provider>
     </transactionContext.Provider>
   );
 };

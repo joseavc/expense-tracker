@@ -8,7 +8,9 @@ export const balanceContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
   // States
-  const [transactionHistory, setTransactionHistory] = useState([]);
+  const [transactionHistory, setTransactionHistory] = useState(
+    JSON.parse(localStorage.getItem('BALANCE')) || []
+  );
   const [income, setIncome] = useState(0);
   const [expense, setExpense] = useState(0);
   const [balance, setBalance] = useState(0);
@@ -30,17 +32,8 @@ export const GlobalProvider = ({ children }) => {
 
     setIncome(inc);
     setExpense(expe);
-    saveLocalBalance();
+    localStorage.setItem('BALANCE', JSON.stringify(transactionHistory));
   }, [transactionHistory]);
-
-  //Run Once
-  useEffect(() => {
-    getLocalBalance();
-  }, []);
-  //Use effect
-  //   useEffect(() => {
-  //     saveLocalBalance();
-  //   }, [history]);
 
   function moneyFormatter(num) {
     let p = num.toFixed(2).split('.');
@@ -59,19 +52,8 @@ export const GlobalProvider = ({ children }) => {
 
   //Save to local
   const saveLocalBalance = () => {
-    if (transactionHistory.length > 0) {
-      console.log('hi');
-      localStorage.setItem('balance', JSON.stringify(transactionHistory));
-    }
-  };
-  const getLocalBalance = () => {
-    if (localStorage.getItem('balance') === null) {
-      localStorage.setItem('balance', JSON.stringify([]));
-    } else {
-      let balanceLocal = JSON.parse(localStorage.getItem('balance'));
-
-      setTransactionHistory(balanceLocal);
-    }
+    console.log('SaveLocal');
+    localStorage.setItem('BALANCE', JSON.stringify(transactionHistory));
   };
 
   return (

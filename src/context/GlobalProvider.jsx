@@ -3,26 +3,38 @@
 /* eslint-disable react/prop-types */
 import React, { createContext, useState, useEffect } from 'react';
 
-export const globalContext = createContext();
-export const historyContext = createContext();
+export const transactionContext = createContext();
 export const balanceContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
-  const [history, setHistory] = useState([]);
+  // States
+  const [transactionHistory, setTransactionHistory] = useState(
+    JSON.parse(localStorage.getItem('BALANCE')) || []
+  );
   const [income, setIncome] = useState(0);
   const [expense, setExpense] = useState(0);
   const [balance, setBalance] = useState(0);
-  //   //Run Once
-  //   useEffect(() => {
-  //     getLocalBalance();
-  //   }, []);
-  //   //Use effect
-  //   useEffect(() => {
-  //     saveLocalBalance();
-  //   }, [history]);
-  function addTransaction(nTransaction) {
-    setHistory([...history, nTransaction]);
-  }
+
+  //useEffect
+  useEffect(() => {
+    const amounts = transactionHistory.map((item) => item.amount);
+    let inc = 0;
+    let expe = 0;
+    setBalance(amounts.reduce((prev, curr) => prev + curr, 0));
+
+    for (let i = 0; i < amounts.length; i++) {
+      if (amounts[i] > 0) {
+        inc = inc + amounts[i];
+      } else {
+        expe = expe + amounts[i];
+      }
+    }
+
+    setIncome(inc);
+    setExpense(expe);
+    localStorage.setItem('BALANCE', JSON.stringify(transactionHistory));
+  }, [transactionHistory]);
+
   function moneyFormatter(num) {
     let p = num.toFixed(2).split('.');
     return (
@@ -38,32 +50,19 @@ export const GlobalProvider = ({ children }) => {
     );
   }
 
-  //   //Save to local
-  //   const saveLocalBalance = () => {
-  //     if (history.length > 0) {
-  //       console.log('hi');
-  //       localStorage.setItem('balance', JSON.stringify(history));
-  //     }
-  //   };
-  //   const getLocalBalance = () => {
-  //     if (localStorage.getItem('balance') === null) {
-  //       localStorage.setItem('balance', JSON.stringify([]));
-  //     } else {
-  //       let balanceLocal = JSON.parse(localStorage.getItem('balance'));
-
-  //       setHistory(balanceLocal);
-  //     }
-  //   };
+  //Save to local
+  const saveLocalBalance = () => {
+    console.log('SaveLocal');
+    localStorage.setItem('BALANCE', JSON.stringify(transactionHistory));
+  };
 
   return (
-    <globalContext.Provider value={addTransaction}>
-      <historyContext.Provider value={{ history, setHistory }}>
-        <balanceContext.Provider
-          value={{ income, setIncome, expense, setExpense, balance, setBalance, moneyFormatter }}>
-          {children}
-        </balanceContext.Provider>
-      </historyContext.Provider>
-    </globalContext.Provider>
+    <transactionContext.Provider
+      value={{ transactionHistory, setTransactionHistory, moneyFormatter }}>
+      <balanceContext.Provider value={{ income, expense, balance, moneyFormatter }}>
+        {children}
+      </balanceContext.Provider>
+    </transactionContext.Provider>
   );
 };
 

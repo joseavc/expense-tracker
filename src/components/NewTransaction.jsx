@@ -1,28 +1,38 @@
 /* eslint-disable no-unused-vars */
 import React, { useContext, useState } from 'react';
-import { globalContext } from '../context/GlobalProvider';
+import { transactionContext } from '../context/GlobalProvider';
 
 function NewTransaction() {
   const [text, setText] = useState('');
   const [amount, setAmount] = useState(0);
-  const addTransaction = useContext(globalContext);
+  const history = useContext(transactionContext);
+  var transaction = {};
+  const setDate = () => {
+    let today = new Date();
+    let date = today.getMonth() + 1 + '/' + today.getDate() + '/' + today.getFullYear();
+    let time = today.getHours() + ':' + today.getMinutes();
+    let fullDate = date + ' | ' + time;
+    return fullDate;
+  };
   const onSubmit = (e) => {
+    const today = setDate();
     e.preventDefault();
-
-    const nTransaction = {
+    transaction = {
       id: Math.floor(Math.random() * 10000),
       description: text,
-      amount: amount
+      amount: parseFloat(amount),
+      date: today
     };
 
-    addTransaction(nTransaction);
+    history.setTransactionHistory([...history.transactionHistory, transaction]);
     setText('');
     setAmount(0);
   };
+
   return (
     <div>
       <h3>Add new transaction</h3>
-      <form onSubmit={onSubmit}>
+      <form>
         <div className="form-control">
           <label htmlFor="text">Description</label>
           <input
@@ -44,7 +54,9 @@ function NewTransaction() {
             placeholder="Enter amount..."
           />
         </div>
-        <button className="btn">Add transaction</button>
+        <button onClick={(e) => onSubmit(e)} className="btn">
+          Add transaction
+        </button>
       </form>
     </div>
   );

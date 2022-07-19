@@ -7,15 +7,17 @@ import NewTransaction from './components/NewTransaction';
 import GlobalProvider from './context/GlobalProvider';
 function App() {
   return (
-    <GlobalProvider>
-      <Header />
-      <div className="container">
-        <Balance />
-        <IncomeExpenses />
-        <TransactionHistory />
-        <NewTransaction />
-      </div>
-    </GlobalProvider>
+    <div className="tracker-container">
+      <GlobalProvider>
+        <Header />
+        <div className="container">
+          <Balance />
+          <IncomeExpenses />
+          <TransactionHistory />
+          <NewTransaction />
+        </div>
+      </GlobalProvider>
+    </div>
   );
 }
 

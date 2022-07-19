@@ -30,13 +30,14 @@ export const GlobalProvider = ({ children }) => {
 
     setIncome(inc);
     setExpense(expe);
+    saveLocalBalance();
   }, [transactionHistory]);
 
-  //   //Run Once
-  //   useEffect(() => {
-  //     getLocalBalance();
-  //   }, []);
-  //   //Use effect
+  //Run Once
+  useEffect(() => {
+    getLocalBalance();
+  }, []);
+  //Use effect
   //   useEffect(() => {
   //     saveLocalBalance();
   //   }, [history]);
@@ -56,22 +57,22 @@ export const GlobalProvider = ({ children }) => {
     );
   }
 
-  //   //Save to local
-  //   const saveLocalBalance = () => {
-  //     if (history.length > 0) {
-  //       console.log('hi');
-  //       localStorage.setItem('balance', JSON.stringify(history));
-  //     }
-  //   };
-  //   const getLocalBalance = () => {
-  //     if (localStorage.getItem('balance') === null) {
-  //       localStorage.setItem('balance', JSON.stringify([]));
-  //     } else {
-  //       let balanceLocal = JSON.parse(localStorage.getItem('balance'));
+  //Save to local
+  const saveLocalBalance = () => {
+    if (transactionHistory.length > 0) {
+      console.log('hi');
+      localStorage.setItem('balance', JSON.stringify(transactionHistory));
+    }
+  };
+  const getLocalBalance = () => {
+    if (localStorage.getItem('balance') === null) {
+      localStorage.setItem('balance', JSON.stringify([]));
+    } else {
+      let balanceLocal = JSON.parse(localStorage.getItem('balance'));
 
-  //       setHistory(balanceLocal);
-  //     }
-  //   };
+      setTransactionHistory(balanceLocal);
+    }
+  };
 
   return (
     <transactionContext.Provider value={{ transactionHistory, setTransactionHistory }}>

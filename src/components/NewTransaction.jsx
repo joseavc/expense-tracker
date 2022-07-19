@@ -7,10 +7,15 @@ function NewTransaction() {
   const [amount, setAmount] = useState(0);
   const history = useContext(transactionContext);
   var transaction = {};
-
+  const setDate = () => {
+    let today = new Date();
+    let date = today.getMonth() + 1 + '/' + today.getDate() + '/' + today.getFullYear();
+    let time = today.getHours() + ':' + today.getMinutes();
+    let fullDate = date + ' | ' + time;
+    return fullDate;
+  };
   const onSubmit = (e) => {
-    const timeElapsed = Date.now();
-    const today = new Date(timeElapsed).toString();
+    const today = setDate();
     e.preventDefault();
     transaction = {
       id: Math.floor(Math.random() * 10000),
